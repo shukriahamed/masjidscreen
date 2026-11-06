@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+  <defs>
+    <path id="topArc" d="M30 100 A70 70 0 0 1 170 100"/>
+    <path id="botArc" d="M24 100 A76 76 0 0 0 176 100"/>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#e9cf72"/><stop offset="1" stop-color="#a87b16"/>
+    </linearGradient>
+  </defs>
+  <circle cx="100" cy="100" r="97" fill="#f4ecd0" stroke="url(#g)" stroke-width="6"/>
+  <circle cx="100" cy="100" r="86" fill="none" stroke="#2f6b3a" stroke-width="3"/>
+  <circle cx="100" cy="100" r="58" fill="#fff8e1" stroke="#2f6b3a" stroke-width="2"/>
+  <!-- mosque mini -->
+  <g transform="translate(100 112)">
+    <path d="M-26 0 V-18 H26 V0 Z" fill="#2f6b3a"/>
+    <path d="M-18 -18 C-18 -40 -8 -48 0 -48 C8 -48 18 -40 18 -18 Z" fill="#c8972a"/>
+    <rect x="-1" y="-58" width="2" height="12" fill="#c8972a"/>
+    <rect x="-36" y="-40" width="8" height="40" fill="#2f6b3a"/><path d="M-36 -40 L-32 -52 L-28 -40 Z" fill="#c8972a"/>
+    <rect x="28" y="-40" width="8" height="40" fill="#2f6b3a"/><path d="M28 -40 L32 -52 L36 -40 Z" fill="#c8972a"/>
+    <path d="M-6 0 V-9 A6 8 0 0 1 6 -9 V0 Z" fill="#fff8e1"/>
+  </g>
+  <text font-family="Georgia, 'Times New Roman', serif" font-weight="700" font-size="17" fill="#2f6b3a" letter-spacing="1">
+    <textPath href="#topArc" startOffset="50%" text-anchor="middle">Masjidur Rahman</textPath>
+  </text>
+  <text font-family="Georgia, 'Times New Roman', serif" font-weight="700" font-size="14" fill="#8a6414" letter-spacing="2">
+    <textPath href="#botArc" startOffset="50%" text-anchor="middle" side="left">Jumma Masjid</textPath>
+  </text>
+</svg>

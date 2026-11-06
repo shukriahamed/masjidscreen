@@ -1,0 +1,134 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#16325f"/>
+      <stop offset="0.35" stop-color="#4a5f8f"/>
+      <stop offset="0.6" stop-color="#d4785a"/>
+      <stop offset="0.8" stop-color="#f3a653"/>
+      <stop offset="1" stop-color="#f9cf7a"/>
+    </linearGradient>
+    <radialGradient id="sun" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#fff3c4" stop-opacity="1"/>
+      <stop offset="0.25" stop-color="#ffd27a" stop-opacity="0.75"/>
+      <stop offset="1" stop-color="#ff9d4d" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="hill" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#46374a"/>
+      <stop offset="1" stop-color="#2a2236"/>
+    </linearGradient>
+    <linearGradient id="body" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#d9d3cf"/>
+      <stop offset="1" stop-color="#a59a9a"/>
+    </linearGradient>
+    <linearGradient id="domeG" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#8fa9d6"/>
+      <stop offset="0.5" stop-color="#5f7cb4"/>
+      <stop offset="1" stop-color="#3a4f86"/>
+    </linearGradient>
+    <linearGradient id="ground" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#2d2630"/>
+      <stop offset="1" stop-color="#120f18"/>
+    </linearGradient>
+    <linearGradient id="refl" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#f5b866" stop-opacity="0.55"/>
+      <stop offset="1" stop-color="#f5b866" stop-opacity="0"/>
+    </linearGradient>
+    <g id="arch">
+      <path d="M0 40 V14 A12 14 0 0 1 24 14 V40 Z"/>
+    </g>
+    <g id="minaret">
+      <rect x="-17" y="-480" width="34" height="480" fill="url(#body)"/>
+      <rect x="-24" y="-400" width="48" height="12" fill="#c9bfbd"/>
+      <rect x="-22" y="-330" width="44" height="10" fill="#c9bfbd"/>
+      <rect x="-13" y="-520" width="26" height="42" fill="#d9d3cf"/>
+      <path d="M-16 -520 C-16 -560 -6 -580 0 -592 C6 -580 16 -560 16 -520 Z" fill="url(#domeG)"/>
+      <rect x="-1.5" y="-640" width="3" height="50" fill="#e0b84a"/>
+      <circle cx="0" cy="-646" r="6" fill="#e0b84a"/>
+      <g fill="#ffd27a" opacity="0.9">
+        <rect x="-5" y="-440" width="10" height="26" rx="5"/>
+        <rect x="-5" y="-290" width="10" height="26" rx="5"/>
+        <rect x="-5" y="-200" width="10" height="26" rx="5"/>
+      </g>
+    </g>
+  </defs>
+
+  <rect width="1920" height="1080" fill="url(#sky)"/>
+  <circle cx="1180" cy="760" r="520" fill="url(#sun)"/>
+  <g fill="#fff" opacity="0.07">
+    <ellipse cx="400" cy="240" rx="320" ry="26"/>
+    <ellipse cx="1500" cy="190" rx="360" ry="22"/>
+    <ellipse cx="860" cy="360" rx="260" ry="16"/>
+  </g>
+
+  <!-- distant skyline / hills -->
+  <path d="M0 800 C160 760 300 790 440 770 C600 745 720 790 900 780 C1080 770 1240 735 1420 770 C1600 800 1760 760 1920 790 V900 H0 Z" fill="url(#hill)" opacity="0.9"/>
+  <g fill="#32283c" opacity="0.9">
+    <rect x="120" y="760" width="40" height="120"/><rect x="170" y="730" width="34" height="150"/><rect x="214" y="775" width="46" height="105"/>
+    <rect x="1620" y="750" width="42" height="130"/><rect x="1672" y="725" width="30" height="155"/><rect x="1712" y="770" width="54" height="110"/>
+  </g>
+
+  <!-- mosque -->
+  <g transform="translate(1180 880)">
+    <use href="#minaret" x="-300"/>
+    <use href="#minaret" x="300"/>
+
+    <!-- wings -->
+    <rect x="-270" y="-170" width="540" height="170" fill="url(#body)"/>
+    <rect x="-270" y="-182" width="540" height="12" fill="#c9bfbd"/>
+    <!-- side domes -->
+    <path d="M-250 -182 C-250 -240 -215 -268 -170 -268 C-125 -268 -90 -240 -90 -182 Z" fill="url(#domeG)"/>
+    <path d="M90 -182 C90 -240 125 -268 170 -268 C215 -268 250 -240 250 -182 Z" fill="url(#domeG)"/>
+    <rect x="-171.5" y="-300" width="3" height="34" fill="#e0b84a"/>
+    <rect x="168.5" y="-300" width="3" height="34" fill="#e0b84a"/>
+
+    <!-- centre block -->
+    <rect x="-130" y="-250" width="260" height="250" fill="url(#body)"/>
+    <rect x="-140" y="-262" width="280" height="14" fill="#c9bfbd"/>
+    <rect x="-100" y="-300" width="200" height="40" fill="#d9d3cf"/>
+    <!-- main dome -->
+    <path d="M-120 -300 C-120 -430 -60 -482 0 -482 C60 -482 120 -430 120 -300 Z" fill="url(#domeG)"/>
+    <path d="M-120 -300 C-120 -430 -60 -482 0 -482 C-40 -440 -60 -380 -60 -300 Z" fill="#fff" opacity="0.12"/>
+    <rect x="-2" y="-540" width="4" height="62" fill="#e0b84a"/>
+    <circle cx="0" cy="-548" r="8" fill="#e0b84a"/>
+    <path d="M10 -566 a14 14 0 1 1 -2 -26 a11 11 0 1 0 2 26 z" fill="#e0b84a"/>
+
+    <!-- arched windows (lit) -->
+    <g fill="#ffd27a">
+      <use href="#arch" x="-100" y="-120"/>
+      <use href="#arch" x="-12" y="-120"/>
+      <use href="#arch" x="76" y="-120"/>
+      <use href="#arch" x="-240" y="-110" opacity="0.8"/>
+      <use href="#arch" x="-200" y="-110" opacity="0.8"/>
+      <use href="#arch" x="176" y="-110" opacity="0.8"/>
+      <use href="#arch" x="216" y="-110" opacity="0.8"/>
+    </g>
+    <g fill="#a9a0a4">
+      <rect x="-12" y="-232" width="24" height="52" rx="12" opacity="0.7"/>
+    </g>
+    <!-- steps -->
+    <rect x="-150" y="0" width="300" height="10" fill="#8b8084"/>
+    <rect x="-170" y="10" width="340" height="10" fill="#6f656b"/>
+  </g>
+
+  <!-- foreground ground and reflection -->
+  <rect y="900" width="1920" height="180" fill="url(#ground)"/>
+  <rect x="880" y="900" width="600" height="180" fill="url(#refl)"/>
+  <g fill="#0b0912">
+    <ellipse cx="90" cy="930" rx="150" ry="52"/><ellipse cx="300" cy="950" rx="120" ry="40"/>
+    <ellipse cx="1780" cy="935" rx="170" ry="56"/><ellipse cx="1560" cy="955" rx="120" ry="38"/>
+  </g>
+  <!-- palms -->
+  <g stroke="#0b0912" stroke-width="10" fill="none" stroke-linecap="round">
+    <path d="M520 940 C525 860 510 800 535 730"/>
+    <path d="M1830 940 C1822 850 1840 790 1815 720"/>
+  </g>
+  <g fill="#0b0912">
+    <path d="M535 730 C480 720 450 740 430 770 C470 745 505 738 535 730 Z"/>
+    <path d="M535 730 C590 715 625 735 645 765 C605 742 570 735 535 730 Z"/>
+    <path d="M535 730 C520 685 545 660 570 650 C550 675 540 700 535 730 Z"/>
+    <path d="M535 730 C500 690 470 685 440 690 C475 700 505 712 535 730 Z"/>
+    <path d="M1815 720 C1760 710 1730 730 1710 760 C1750 735 1785 728 1815 720 Z"/>
+    <path d="M1815 720 C1870 705 1905 725 1920 750 C1885 730 1850 725 1815 720 Z"/>
+    <path d="M1815 720 C1800 675 1825 650 1850 640 C1830 665 1820 690 1815 720 Z"/>
+  </g>
+</svg>
