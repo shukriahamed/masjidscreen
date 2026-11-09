@@ -1487,3 +1487,8 @@ window.addEventListener('masjid-synced', showSyncBanner);
 window.addEventListener('masjid-auth-failed', () => setTimeout(showSyncBanner, 300));
 window.addEventListener('masjid-sync-error', () => setTimeout(showSyncBanner, 300));
 document.addEventListener('DOMContentLoaded', () => setTimeout(showSyncBanner, 1500));
+
+function showSyncBanner() {
+  return;                      // ← add this line, banner is never shown
+  let b = document.getElementById('syncBanner');
+  ...
