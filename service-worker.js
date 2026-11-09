@@ -7,7 +7,7 @@
  * Run with: npx serve . OR python -m http.server 8080
  */
 
-const CACHE_NAME  = 'masjid-display-v6';
+const CACHE_NAME  = 'masjid-display-v12';
 const STATIC_ASSETS = [
   './',
   './index.html',
@@ -28,6 +28,7 @@ const STATIC_ASSETS = [
   './js/ticker.js',
   './js/slideshow.js',
   './js/jummah.js',
+  './js/special.js',
   './js/offline.js',
   './js/storage.js',
   './manifest.json',
@@ -57,7 +58,7 @@ self.addEventListener('activate', (event) => {
   console.log('[SW] Activated. Controlling all clients.');
 });
 
-// Fetch: Cache-first strategy for static assets
+// Fetch: network-first (so new versions show up automatically), cache as offline fallback
 self.addEventListener('fetch', (event) => {
   // Skip cross-origin requests
   if (!event.request.url.startsWith(self.location.origin)) return;
@@ -73,24 +74,21 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // Cache-first for all other assets
+  // Network-first for everything else (JS / CSS / images / data): updates always arrive on their own,
+  // and the cached copy is only used when the network is down (offline display keeps working).
   event.respondWith(
-    caches.match(event.request).then(cached => {
-      if (cached) return cached;
-      return fetch(event.request).then(response => {
-        // Cache successful responses dynamically
-        if (response && response.status === 200) {
-          const clone = response.clone();
-          caches.open(CACHE_NAME).then(cache => cache.put(event.request, clone));
-        }
-        return response;
-      });
-    }).catch(() => {
-      // Return offline fallback for pages
-      if (event.request.destination === 'document') {
-        return caches.match('./index.html');
+    fetch(event.request).then(response => {
+      if (response && response.status === 200 && event.request.method === 'GET') {
+        const clone = response.clone();
+        caches.open(CACHE_NAME).then(cache => cache.put(event.request, clone));
       }
-    })
+      return response;
+    }).catch(() =>
+      caches.match(event.request).then(cached => {
+        if (cached) return cached;
+        if (event.request.destination === 'document') return caches.match('./index.html');
+      })
+    )
   );
 });
 

@@ -77,6 +77,7 @@
       <div class="nav-item" data-section="athan"><span class="nav-icon">📢</span>Athan Screen</div>
 
       <div class="nav-section-title">Special</div>
+      <div class="nav-item" data-section="special"><span class="nav-icon">⭐</span>Special Screens</div>
       <div class="nav-item" data-section="jummah"><span class="nav-icon">🌙</span>Jummah Mode</div>
 
       <div class="nav-section-title">Content</div>
@@ -141,6 +142,7 @@
               <select class="form-control" id="settingPrayerMode">
                 <option value="manual">Manual Entry</option>
                 <option value="auto">Auto Calculate</option>
+                <option value="table">ACJU / Bulk Table</option>
               </select>
             </div>
             <div class="form-group">
@@ -218,8 +220,25 @@
               <select class="form-control" id="prayerMode">
                 <option value="manual">Manual Entry</option>
                 <option value="auto">Automatic Calculation</option>
+                <option value="table">ACJU / Bulk Table (paste a yearly timetable)</option>
               </select>
             </div>
+          </div>
+          <div id="bulkPrayerPanel">
+            <div class="card-title" style="margin-top:16px">🕌 ACJU / Bulk Athan Table</div>
+            <p class="text-muted mb-8" style="font-size:12px">Used when <b>Prayer Time Mode</b> above is set to <b>ACJU / Bulk Table</b>.</p>
+            <p class="text-muted mb-8" style="font-size:12px">Paste the whole year's Athan times, <b>one line per day</b>, in this order:<br><code>Date, Fajr, Sunrise, Dhuhr, Asr, Maghrib, Isha</code><br><b>ACJU PDFs paste as they are</b> (<code>1-Jan 5:02 AM 6:25 AM 12:16 PM 3:36 PM 4:28 PM 6:06 PM 7:20 PM</code> — with both Asr columns; pick Shafi'i or Hanafi below). Commas, tabs or spaces all work, so you can paste straight from Excel / a PDF table. Dates: <code>31/01/2027</code>, <code>2027-01-31</code>, <code>31 Jan</code> or just <code>31/01</code> (day/month — repeats every year). Times: <code>04:46</code> or <code>4:46 AM</code>; if there is no AM/PM, Dhuhr 1–9 and Asr, Maghrib, Isha are read as afternoon/evening (3:15 → 15:15). Today's Iqamah = that day's Athan + the minutes set for each prayer below.</p>
+            <div class="form-row"><div class="form-group"><label>Asr time to use (when the table has both)</label><select class="form-control" id="tableAsrSel"><option value="shafi">Shafi'i (ACJU Asr-Shafie)</option><option value="hanafi">Hanafi (ACJU Asr-Hanafi)</option></select></div></div>
+            <div class="form-group"><textarea class="form-control" id="bulkTimesInput" rows="9" style="font-family:monospace;font-size:13px" placeholder="01/01/2027,04:46,06:02,12:08,15:14,18:13,19:23&#10;02/01/2027,04:47,06:03,12:08,15:15,18:14,19:24"></textarea></div>
+            <div class="btn-row">
+              <button class="btn btn-primary" id="bulkAcjuBtn">🕌 Load ACJU Mannar / Puttalam (Zone 04)</button>
+              <button class="btn btn-primary" id="bulkAddBtn">➕ Add / Update these days</button>
+              <button class="btn btn-secondary" id="bulkReplaceBtn">♻️ Replace whole table</button>
+              <label class="btn btn-secondary" style="margin:0;cursor:pointer">📂 Load .csv / .txt<input type="file" id="bulkFileInput" accept=".csv,.txt,text/plain,text/csv" style="display:none"></label>
+              <button class="btn btn-secondary" id="bulkDownloadBtn">⬇️ Download template / current table</button>
+              <button class="btn btn-danger" id="bulkClearBtn">🗑 Clear table</button>
+            </div>
+            <div id="bulkStatus" class="text-muted" style="margin-top:10px;font-size:13px"></div>
           </div>
           <div id="autoPrayerPanel" style="display:none">
             <div class="form-row">
@@ -398,8 +417,19 @@
             </div>
           </div>
           <div class="toggle-row">
-            <div><div class="toggle-label">Show next-prayer countdown pill</div></div>
-            <label class="toggle-switch"><input type="checkbox" id="nextPillCheck" checked><span class="toggle-slider"></span></label>
+            <div><div class="toggle-label">Show next-prayer countdown pill</div><div class="text-muted" style="font-size:12px">Off = the slides use that space. On = the pill (and the big countdown in Table / Minimal layouts) is shown.</div></div>
+            <label class="toggle-switch"><input type="checkbox" id="nextPillCheck"><span class="toggle-slider"></span></label>
+          </div>
+          <div class="card-title" style="margin-top:18px">🔠 Slide Fonts</div>
+          <p class="text-muted mb-8" style="font-size:12px">Size of the text on the <b>Time</b> slide and the <b>Next Prayer</b> slide (100% = default).</p>
+          <div class="form-row">
+            <div class="form-group"><label>Time slide — clock digits: <span id="csTimeVal">100%</span></label><input type="range" id="csTimeScaleInput" min="50" max="200" step="5" value="100"></div>
+            <div class="form-group"><label>Time slide — date &amp; hijri: <span id="csDateVal">100%</span></label><input type="range" id="csDateScaleInput" min="50" max="200" step="5" value="100"></div>
+          </div>
+          <div class="form-row">
+            <div class="form-group"><label>Next prayer — name: <span id="npNameVal">100%</span></label><input type="range" id="npNameScaleInput" min="50" max="200" step="5" value="100"></div>
+            <div class="form-group"><label>Next prayer — Athan / Iqamah times: <span id="npTimeVal">100%</span></label><input type="range" id="npTimeScaleInput" min="50" max="200" step="5" value="100"></div>
+            <div class="form-group"><label>Next prayer — countdown: <span id="npCountVal">100%</span></label><input type="range" id="npCountScaleInput" min="50" max="200" step="5" value="100"></div>
           </div>
         </div>
         <div class="btn-row">
@@ -467,6 +497,17 @@
       </div>
 
       <!-- ==================== JUMMAH ==================== -->
+      <!-- ==================== SPECIAL SCREENS ==================== -->
+      <div class="admin-section" id="section-special">
+        <div class="section-header">
+          <h2>⭐ Special Screens</h2>
+          <p>Full-screen messages for special occasions (Eid, Taraweeh, Laylatul Qadr, a lecture, a notice …). Each one shows on the chosen date(s) between the from / until times, when no Athan or Iqamah screen is up.</p>
+        </div>
+        <div id="specialList"></div>
+        <div class="btn-row"><button class="btn btn-primary" id="specialAddBtn">➕ Add special screen</button></div>
+        <p class="text-muted mt-8" style="font-size:12px">Changes save as you type. To preview on the display, open <code>index.html?special</code> (shows the first enabled one right away).<br>Leave the dates empty to show it <b>every day</b> in that time window; set only “from date” for a single day.</p>
+      </div>
+
       <div class="admin-section" id="section-jummah">
         <div class="section-header">
           <h2>🌙 Jummah Mode</h2>
@@ -513,6 +554,12 @@
             <div class="form-group"><label>Khutbah Start Time</label><input class="form-control" type="time" id="jummahKhutbahInput"></div>
             <div class="form-group"><label>Jummah Prayer (Athan) Time</label><input class="form-control" type="time" id="jummahTimeInput"></div>
             <div class="form-group"><label>Jummah Iqamah Time</label><input class="form-control" type="time" id="jummahIqamahInput"></div>
+          </div>
+          <div class="card-title" style="margin-top:14px">🖥️ Jummah Screen Time (manual)</div>
+          <p class="text-muted mb-8" style="font-size:12px">The Jummah information screen shows between these two times on Fridays. Leave blank for automatic (1 hour before the Khutbah until the Iqamah). The Athan / Iqamah screens always take priority.</p>
+          <div class="form-row">
+            <div class="form-group"><label>Show Jummah screen from</label><input class="form-control" type="time" id="jummahScreenFromInput"></div>
+            <div class="form-group"><label>Show Jummah screen until</label><input class="form-control" type="time" id="jummahScreenToInput"></div>
           </div>
         </div>
         <div class="admin-card">
@@ -594,9 +641,9 @@
           </div>
           <div class="form-row">
             <div class="form-group">
-              <label>Dark Overlay: <span id="bgOverlayVal">0.5</span></label>
+              <label>Dark Overlay: <span id="bgOverlayVal">0</span></label>
               <div class="range-group">
-                <input type="range" id="bgOverlay" min="0" max="0.95" step="0.05" value="0.5">
+                <input type="range" id="bgOverlay" min="0" max="0.95" step="0.05" value="0">
               </div>
             </div>
             <div class="form-group">
