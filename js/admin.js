@@ -83,7 +83,8 @@ function updatePinDisplay() {
   document.getElementById('loginError').textContent = '';
 }
 
-function checkPin() {
+async function checkPin() {
+  await adminReady;                       // settings (and a PIN changed on another device) are loaded
   const settings = Storage.getSettings();
   const correctPin = settings.adminPin || '1234';
   if (pinInput === correctPin) {
@@ -1366,10 +1367,15 @@ function askAdminToken(force) {
   if (t) { Storage.setToken(t.trim()); Storage.pushNow().then(showSyncBanner); }
 }
 
-document.addEventListener('DOMContentLoaded', async () => {
-  await Storage.openDB();
-  await Storage.syncFromServer();     // get the latest settings/images from the server first
+// The PIN screen (keypad AND physical keyboard) starts immediately — it never waits for the server.
+// Opening the database and pulling the latest settings happens in the background (max 4 s).
+let adminReady = Promise.resolve();
+document.addEventListener('DOMContentLoaded', () => {
   initLogin();
+  adminReady = (async () => {
+    await Storage.openDB();
+    await Promise.race([Storage.syncFromServer(), new Promise(r => setTimeout(r, 4000))]);
+  })().catch(e => console.warn('[admin] startup', e));
 });
 
 
@@ -1462,33 +1468,41 @@ document.addEventListener('DOMContentLoaded', initSpecialSection);
 // SERVER SYNC STATUS (so a broken setup is never silent)
 // ============================================================
 function showSyncBanner() {
+  return;   // banner switched off
   let b = document.getElementById('syncBanner');
+  const off = (() => { try { return localStorage.getItem('masjidSyncBannerOff') === '1'; } catch (e) { return false; } })();
+  if (off) { if (b) b.remove(); return; }
   if (!b) {
     b = document.createElement('div');
     b.id = 'syncBanner';
-    b.style.cssText = 'position:fixed;left:12px;bottom:12px;z-index:99999;max-width:460px;padding:10px 14px;border-radius:10px;font:13px/1.4 system-ui,sans-serif;color:#fff;box-shadow:0 4px 14px rgba(0,0,0,.4);cursor:pointer';
+    b.style.cssText = 'position:fixed;left:12px;bottom:12px;z-index:99999;max-width:460px;padding:10px 34px 10px 14px;border-radius:10px;font:13px/1.4 system-ui,sans-serif;color:#fff;box-shadow:0 4px 14px rgba(0,0,0,.4)';
     document.body.appendChild(b);
   }
+  clearTimeout(b._hide);
+  let msg, bg, action = null, autoHide = false;
   if (!Storage.hasRemote()) {
-    b.style.background = '#a33';
-    b.innerHTML = '⚠️ <b>Not connected to the server — changes stay on THIS device only.</b><br>' + escHtml(Storage.getRemoteError() || 'Checking…') + '<br><u>Click to test again</u>';
-    b.onclick = async () => { await Storage.syncFromServer(); showSyncBanner(); };
+    bg = '#a33';
+    msg = '⚠️ <b>Not connected to the server — changes stay on THIS device only.</b><br>' + escHtml(Storage.getRemoteError() || 'Checking…') + '<br><u style="cursor:pointer" data-a="retry">Test again</u>';
+    action = async () => { await Storage.syncFromServer(); showSyncBanner(); };
   } else if (!Storage.getToken()) {
-    b.style.background = '#b8860b';
-    b.innerHTML = '🔑 Server found, but the <b>admin token</b> is not entered — changes are NOT being saved to the server.<br><u>Click to enter the token</u>';
-    b.onclick = () => { askAdminToken(true); setTimeout(showSyncBanner, 500); };
+    bg = '#b8860b';
+    msg = '🔑 Server found, but the <b>admin token</b> is not entered — changes are NOT being saved to the server.<br><u style="cursor:pointer" data-a="retry">Enter the token</u>';
+    action = () => { askAdminToken(true); setTimeout(showSyncBanner, 500); };
   } else {
-    b.style.background = '#1f7a4d';
-    b.innerHTML = '✅ Connected to the server — changes sync to all displays.';
-    b.onclick = null;
+    bg = '#1f7a4d';
+    msg = '✅ Connected to the server — changes sync to all displays.';
+    autoHide = true;
   }
+  b.style.background = bg;
+  b.innerHTML = msg + '<span data-a="close" title="Close (don\'t show again)" style="position:absolute;top:6px;right:10px;font-size:18px;cursor:pointer;line-height:1">×</span>';
+  b.onclick = (e) => {
+    const a = e.target && e.target.dataset && e.target.dataset.a;
+    if (a === 'close') { try { localStorage.setItem('masjidSyncBannerOff', '1'); } catch (x) {} b.remove(); }
+    else if (a === 'retry' && action) action();
+  };
+  if (autoHide) b._hide = setTimeout(() => b.remove(), 4000);
 }
 window.addEventListener('masjid-synced', showSyncBanner);
 window.addEventListener('masjid-auth-failed', () => setTimeout(showSyncBanner, 300));
 window.addEventListener('masjid-sync-error', () => setTimeout(showSyncBanner, 300));
 document.addEventListener('DOMContentLoaded', () => setTimeout(showSyncBanner, 1500));
-
-function showSyncBanner() {
-  return;                      // ← add this line, banner is never shown
-  let b = document.getElementById('syncBanner');
-  ...
